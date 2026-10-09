@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa de Cancelamento · Churn Geral · 1º SEM 2026</title>
+<style>
+  :root{
+    --navy:#123A5E; --deep:#002060; --orange:#F58220;
+    --gray:#8A8F98; --bg:#F5F7FA; --card:#FFFFFF;
+    --border:#E5E9F0; --text:#1A2530; --muted:#6B7280;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding:32px 20px;}
+  .container{max-width:1200px;margin:0 auto;}
+  .app-card{background:var(--card);border-radius:16px;box-shadow:0 4px 24px rgba(18,58,94,0.08);overflow:hidden;}
+  .top-bar{display:flex;justify-content:space-between;align-items:center;padding:24px 32px 12px;border-bottom:1px solid var(--border);}
+  .top-bar .brand{font-weight:700;color:var(--navy);font-size:15px;}
+  .badge{background:var(--bg);border:1px solid var(--border);color:var(--navy);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;}
+  .exec-block{padding:24px 32px 8px;}
+  .kicker{color:var(--gray);font-size:12px;letter-spacing:1.4px;font-weight:700;margin-bottom:8px;}
+  h1{font-size:32px;color:var(--navy);margin-bottom:10px;font-weight:800;}
+  .subtitle{color:var(--muted);font-size:15px;margin-bottom:24px;}
+  .main-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 32px 24px;}
+  .main-tab{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s;font-size:15px;font-weight:600;color:var(--navy);}
+  .main-tab:hover{border-color:var(--navy);}
+  .main-tab.active{background:var(--deep);color:#fff;border-color:var(--deep);}
+  .main-tab .pill{font-size:11px;background:rgba(245,130,32,0.15);color:var(--orange);padding:4px 10px;border-radius:999px;font-weight:700;}
+  .main-tab.active .pill{background:rgba(255,255,255,0.18);color:#fff;}
+  .sub-tabs{display:flex;gap:28px;padding:0 32px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+  .sub-tab{background:none;border:none;padding:14px 0 12px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;}
+  .sub-tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+  .sub-tab:hover{color:var(--navy);}
+  .content-area{padding:28px 32px 36px;}
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+  .chart-head .label{font-size:11px;letter-spacing:1.2px;font-weight:700;color:var(--gray);margin-bottom:4px;}
+  .chart-head .name{font-size:20px;font-weight:700;color:var(--navy);}
+  .chart-head .totalbox{text-align:right;}
+  .chart-head .totalbox .n{font-size:32px;font-weight:800;color:var(--orange);line-height:1;}
+  .chart-head .totalbox .t{font-size:12px;color:var(--muted);font-weight:600;}
+  .chart-wrap{width:100%;overflow:visible;}
+  .chart-wrap svg{display:block;width:100%;height:auto;}
+  .bar-rect{fill:var(--navy);transition:fill .2s, width .6s cubic-bezier(.2,.7,.2,1);cursor:pointer;}
+  .bar-rect:hover{fill:var(--orange);}
+  .bar-label{font-size:12px;fill:var(--text);font-weight:600;}
+  .bar-value{font-size:12px;fill:var(--orange);font-weight:700;}
+  .axis-line{stroke:#EEF1F5;stroke-width:1;}
+  .axis-tick{font-size:10px;fill:var(--gray);}
+  .data-toggle{margin-top:18px;background:none;border:1px solid var(--border);color:var(--navy);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
+  .data-toggle:hover{background:var(--bg);}
+  .data-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;}
+  .data-table th,.data-table td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+  .data-table th{color:var(--muted);font-size:11px;letter-spacing:.6px;text-transform:uppercase;font-weight:700;}
+  .data-table td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--navy);font-weight:600;}
+  .data-table tbody tr:hover{background:var(--bg);}
+  .insights-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  .insight-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;transition:all .2s;}
+  .insight-card:hover{border-color:var(--orange);box-shadow:0 6px 20px rgba(245,130,32,0.12);}
+  .insight-num{font-size:11px;letter-spacing:1.4px;font-weight:800;color:var(--orange);margin-bottom:10px;}
+  .insight-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:12px;line-height:1.35;}
+  .insight-body{font-size:13.5px;color:var(--text);line-height:1.6;}
+  .footer-bar{height:6px;background:linear-gradient(90deg,var(--navy) 0%,var(--deep) 40%,var(--orange) 100%);}
+  @media (max-width:820px){
+    .main-tabs{grid-template-columns:1fr;}
+    .insights-grid{grid-template-columns:1fr;}
+    h1{font-size:24px;}
+    .content-area,.exec-block,.top-bar,.main-tabs,.sub-tabs{padding-left:20px;padding-right:20px;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="app-card">
+    <div class="top-bar">
+      <div class="brand">Pesquisa de Cancelamento · Tribe Aquisição</div>
+      <div class="badge">1º SEM · 2026</div>
+    </div>
+    <div class="exec-block">
+      <div class="kicker">SUMÁRIO EXECUTIVO</div>
+      <h1>Pesquisa de Cancelamento</h1>
+      <div class="subtitle">Motivos, feedbacks e intenção de retorno dos clientes cancelados nos planos Completo e Básico · Churn Geral · 1º Semestre 2026</div>
+    </div>
+    <div class="main-tabs">
+      <div class="main-tab active" data-plan="completo"><span>Plano Completo</span><span class="pill">273 respondentes</span></div>
+      <div class="main-tab" data-plan="basico"><span>Plano Básico</span><span class="pill">157 respondentes</span></div>
+      <div class="main-tab" data-plan="insights"><span>Insights para Aquisição</span><span class="pill">4 leituras</span></div>
+    </div>
+    <div id="planArea">
+      <div class="sub-tabs" id="subTabs">
+        <button class="sub-tab active" data-sub="motivos">Motivos de Cancelamento</button>
+        <button class="sub-tab" data-sub="mais">Mais Opções de Motivos</button>
+        <button class="sub-tab" data-sub="feedback">Feedback / Experiência</button>
+        <button class="sub-tab" data-sub="voltaria">Voltaria a ser Cliente se...</button>
+      </div>
+      <div class="content-area">
+        <div class="chart-card">
+          <div class="chart-head">
+            <div>
+              <div class="label" id="planLabel">PLANO COMPLETO · ECOMMERCE PF</div>
+              <div class="name" id="chartTitle">Motivos de Cancelamento</div>
+            </div>
+            <div class="totalbox"><div class="n" id="totalN">273</div><div class="t">respondentes</div></div>
+          </div>
+          <div class="chart-wrap" id="chartWrap"></div>
+          <button class="data-toggle" id="dataToggle">Ver dados</button>
+          <div id="dataTableWrap" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="insightsArea" style="display:none;">
+      <div class="content-area">
+        <div class="insights-grid" id="insightsGrid"></div>
+      </div>
+    </div>
+    <div class="footer-bar"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {"completo": {"respondentes": 273, "sub": {"motivos": {"title": "Motivos de Cancelamento", "total": 273, "data": {"Valor tarifas/mensalidade": 30.0, "Venda do carro": 26.0, "Mais": 16.8, "Problemas com cobrança": 14.3, "Oferta da concorrência": 13.6, "Suporte/atendimento": 12.5, "Pouco uso": 12.1, "Troca do veículo": 7.7, "Modelo pré-pago": 7.0, "Falhas no uso da tag": 4.0, "Roubo de veículo": 0.4}}, "mais": {"title": "Mais Opções de Motivos", "total": 18, "data": {"Tag não foi entregue": 55.6, "Perda total do veículo": 11.1, "Não possui mais conta no banco da oferta": 11.1, "Migração para parceiro": 11.1, "Cobrança indevida": 5.6, "Dificuldades com o App": 5.6}}, "feedback": {"title": "Feedback / Experiência", "total": 203, "data": {"Cobrança indevida": 15.8, "Experiência positiva": 13.3, "Outros": 11.3, "Tag não entregue": 10.3, "Valor de mensalidade": 9.4, "Concorrência sem mensalidade": 8.4, "Modelo de recarga": 7.4, "Oferta concorrência": 6.9, "Falha no uso": 5.9, "Venda do veículo": 4.9, "Troca de veículo": 3.4, "Dificuldade no app": 3.0}}, "voltaria": {"title": "Voltaria a ser Cliente se...", "total": 180, "data": {"Sem mensalidade": 18.3, "Novo/outro veículo": 16.7, "Ainda é cliente": 11.1, "Já foi p/ concorrência": 10.6, "Não voltaria": 9.4, "Melhoria/confiança": 7.8, "Modelo de cobrança": 7.2, "Devolução/ressarcimento": 5.6, "Talvez no futuro": 4.4, "Entrega da tag": 4.4, "Recarga flexível": 4.4}}}}, "basico": {"respondentes": 157, "sub": {"motivos": {"title": "Motivos de Cancelamento", "total": 157, "data": {"Valor tarifas/mensalidade": 31.9, "Oferta da concorrência": 23.1, "Mais": 20.9, "Venda do carro": 19.8, "Problemas com cobrança": 17.6, "Suporte/atendimento": 17.6, "Pouco uso": 16.5, "Falhas no uso da tag": 8.8, "Modelo pré-pago": 8.8, "Troca do veículo": 5.5, "Roubo de veículo": 1.1, "Cobertura da rede de aceitação": 1.1}}, "mais": {"title": "Mais Opções de Motivos", "total": 10, "data": {"Tag não foi entregue": 50.0, "Migração para parceiro": 40.0, "Cobrança indevida": 10.0}}, "feedback": {"title": "Feedback / Experiência", "total": 71, "data": {"Taxa de recarga": 26.8, "Tag não entregue": 14.1, "Migrou concorrência": 11.3, "Experiência positiva": 9.9, "Cobrança indevida": 8.5, "Atendimento ruim": 8.5, "Outros": 7.0, "Problemas no app": 4.2, "Falha na tag": 4.2, "Troca/venda veículo": 2.8, "Experiência negativa": 1.4, "Cobertura limitada": 1.4}}, "voltaria": {"title": "Voltaria a ser Cliente se...", "total": 56, "data": {"Sem taxas/mensalidade": 30.4, "Não voltaria": 14.3, "Melhorar atendimento": 14.3, "Enviar nova tag": 7.1, "Continua cliente": 7.1, "Comprar novo carro": 5.4, "Voltaria": 5.4, "Migrou concorrência": 3.6, "Satisfeito/app bom": 3.6, "Resolver problema": 3.6, "Boas condições/preço": 1.8, "Melhorar cobertura": 1.8, "Não sabe": 1.8}}}}};
+const INSIGHTS = [{"n": "01", "cat": "PREÇO & MENSALIDADE/TAXAS", "title": "Preço é o principal motivo de cancelamento nos dois planos", "body": "Tarifas/mensalidade lideram os cancelamentos tanto no Completo (30%) quanto no Básico (32%). A diferença aparece na intenção de retorno: 'sem mensalidade/taxas' pesa mais no Básico (30%) do que no Completo (18%), reforçando que a proposta de preço influencia tanto a entrada quanto a saída do cliente."}, {"n": "02", "cat": "ENTREGA", "title": "Entrega da tag é um gargalo antes mesmo do uso", "body": "'Tag não entregue' aparece com força nos motivos adicionais dos dois planos: 56% no Completo e 50% no Básico. Também reaparece nos feedbacks/sugestões, com 10% no Completo e 14% no Básico, indicando que parte dos clientes cancela antes de ativar ou usar plenamente o serviço."}, {"n": "03", "cat": "CONFIANÇA", "title": "Cobranças impactam a percepção da marca", "body": "Problemas relacionados a cobrança aparecem nos dois planos: no Completo, 'cobrança indevida' é a principal menção de experiência (16%) e também figura entre os motivos de cancelamento (14%). No Básico, problemas com cobrança motivam 18% dos cancelamentos. Os dados mostram que falhas nesse processo afetam diretamente a confiança do cliente e a percepção da marca."}, {"n": "04", "cat": "CICLO DO VEÍCULO", "title": "Parte relevante da saída não é insatisfação direta", "body": "Venda e troca do veículo representam uma parcela importante dos cancelamentos: no Completo, somam cerca de 34% das saídas; no Básico, cerca de 25%. É uma perda ligada ao ciclo do veículo, não necessariamente à insatisfação com o produto — por isso, continua sendo um público endereçável para reconquista após a compra de um novo veículo."}];
+
+let currentPlan = 'completo';
+let currentSub = 'motivos';
+let tableVisible = false;
+
+const planLabels = {
+  completo: 'PLANO COMPLETO · ECOMMERCE PF',
+  basico: 'PLANO BÁSICO · ECOMMERCE PF'
+};
+
+function fmt(v){ return v.toFixed(1).replace('.',',') + '%'; }
+function truncate(s, n){ return s.length > n ? s.slice(0, n-1) + '…' : s; }
+
+function renderChart(){
+  const plan = DATA[currentPlan];
+  const sec = plan.sub[currentSub];
+  const entries = Object.entries(sec.data);
+  const total = sec.total;
+
+  document.getElementById('planLabel').textContent = planLabels[currentPlan];
+  document.getElementById('chartTitle').textContent = sec.title;
+  document.getElementById('totalN').textContent = total;
+
+  const W = 1080;
+  const labelW = 210;
+  const rightPad = 70;
+  const topPad = 30;
+  const bottomPad = 30;
+  const barH = 26;
+  const gap = 10;
+  const rowH = barH + gap;
+  const H = topPad + entries.length * rowH + bottomPad;
+
+  const maxVal = Math.max(...entries.map(e => e[1]));
+  const scaleMax = Math.ceil((maxVal * 1.1) / 10) * 10;
+  const plotW = W - labelW - rightPad;
+  const xScale = v => (v / scaleMax) * plotW;
+
+  const ticks = [];
+  const nTicks = 5;
+  for(let i=0; i<=nTicks; i++){
+    ticks.push((scaleMax / nTicks) * i);
+  }
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMinYMin meet" role="img" aria-label="${sec.title}">`;
+
+  ticks.forEach(t => {
+    const x = labelW + xScale(t);
+    svg += `<line class="axis-line" x1="${x}" y1="${topPad-8}" x2="${x}" y2="${H-bottomPad+4}"/>`;
+    svg += `<text class="axis-tick" x="${x}" y="${H-bottomPad+18}" text-anchor="middle">${Math.round(t)}%</text>`;
+  });
+
+  entries.forEach(([label, val], i) => {
+    const y = topPad + i * rowH;
+    const w = Math.max(2, xScale(val));
+    const cy = y + barH/2 + 4;
+    const shortLabel = truncate(label, 28);
+    svg += `<text class="bar-label" x="${labelW - 10}" y="${cy}" text-anchor="end"><title>${label}</title>${shortLabel}</text>`;
+    svg += `<rect class="bar-rect" x="${labelW}" y="${y}" width="${w}" height="${barH}" rx="4" ry="4"><title>${label}: ${fmt(val)}</title></rect>`;
+    svg += `<text class="bar-value" x="${labelW + w + 8}" y="${cy}">${fmt(val)}</text>`;
+  });
+
+  svg += `</svg>`;
+  document.getElementById('chartWrap').innerHTML = svg;
+
+  const rows = entries.map(([k,v]) => {
+    const abs = Math.round(v/100 * total);
+    return `<tr><td>${k}</td><td class="num">${fmt(v)}</td><td class="num">${abs}</td></tr>`;
+  }).join('');
+  document.getElementById('dataTableWrap').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>Categoria</th><th style="text-align:right;">%</th><th style="text-align:right;">Aprox. (n)</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  document.getElementById('dataTableWrap').style.display = tableVisible ? 'block' : 'none';
+  document.getElementById('dataToggle').textContent = tableVisible ? 'Ocultar dados' : 'Ver dados';
+}
+
+function renderInsights(){
+  const grid = document.getElementById('insightsGrid');
+  grid.innerHTML = INSIGHTS.map(i => `
+    <div class="insight-card">
+      <div class="insight-num">${i.n} · ${i.cat}</div>
+      <div class="insight-title">${i.title}</div>
+      <div class="insight-body">${i.body}</div>
+    </div>`).join('');
+}
+
+document.querySelectorAll('.main-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const plan = tab.dataset.plan;
+    if(plan === 'insights'){
+      document.getElementById('planArea').style.display = 'none';
+      document.getElementById('insightsArea').style.display = 'block';
+    } else {
+      document.getElementById('planArea').style.display = 'block';
+      document.getElementById('insightsArea').style.display = 'none';
+      currentPlan = plan;
+      renderChart();
+    }
+  });
+});
+
+document.querySelectorAll('.sub-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentSub = tab.dataset.sub;
+    renderChart();
+  });
+});
+
+document.getElementById('dataToggle').addEventListener('click', () => {
+  tableVisible = !tableVisible;
+  document.getElementById('dataTableWrap').style.display = tableVisible ? 'block' : 'none';
+  document.getElementById('dataToggle').textContent = tableVisible ? 'Ocultar dados' : 'Ver dados';
+});
+
+renderInsights();
+renderChart();
+</script>
+</body>
+</html>
